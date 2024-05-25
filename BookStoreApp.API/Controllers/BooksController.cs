@@ -59,7 +59,7 @@ namespace BookStoreApp.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(id))
+                if (! await BookExists(id))
                 {
                     return NotFound();
                 }
@@ -80,7 +80,7 @@ namespace BookStoreApp.API.Controllers
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
         }
 
         // DELETE: api/Books/5
@@ -99,9 +99,9 @@ namespace BookStoreApp.API.Controllers
             return NoContent();
         }
 
-        private bool BookExists(int id)
+        private async Task<bool> BookExists(int id)
         {
-            return _context.Books.Any(e => e.Id == id);
+            return await _context.Books.AnyAsync(e => e.Id == id);
         }
     }
 }
